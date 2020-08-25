@@ -1,6 +1,9 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { SYS, DB, ERROR } = require("./systemLog");
+
+require("dotenv").config();
 
 const app = express();
 
@@ -9,14 +12,18 @@ const allFetchRoutes = require("./routes/alFetch");
 
 const PORT = process.env.PORT || 4000;
 
-app.use(express.json());
+app.use(express.static("uploads"));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
 
 app.use("/api", allFetchRoutes);
 
 async function start() {
   try {
     await mongoose.connect(
-      "mongodb+srv://hwndrer:Mike123a@cluster0.sy6pf.mongodb.net/Cluster0?retryWrites=true&w=majority",
+      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.sy6pf.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
         useFindAndModify: false,
